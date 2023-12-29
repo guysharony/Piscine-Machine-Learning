@@ -1,9 +1,10 @@
 from dataclasses import dataclass, field
+from typing import Union
 
 @dataclass
 class Matrix:
-    data = field(default_factory=list(list(int, float)))
-    shape = field(default_factory=tuple(int, int))
+    data: list = field(default_factory=list)
+    shape: tuple = field(default_factory=tuple)
 
     def __init__(self, values):
         if values.__class__ not in (list, tuple):
@@ -33,18 +34,79 @@ class Matrix:
         if self.shape != m.shape:
             raise ValueError("Matrices must have the same dimensions for addition.")
 
-        self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self.data, m)]
-        return self
+        return Matrix([
+            [x + y for x, y in zip(a, b)]
+            for a, b in zip(self.data, m.data)
+        ])
 
     def __radd__(self, m: 'Matrix') -> 'Matrix':
-        return self.__add__(m)
+        return m.__add__(self)
 
     def __sub__(self, m: 'Matrix') -> 'Matrix':
         if self.shape != m.shape:
             raise ValueError("Matrices must have the same dimensions for subtraction.")
 
-        self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self.data, m)]
-        return self
+        return Matrix([
+            [x - y for x, y in zip(a, b)]
+            for a, b in zip(self.data, m.data)
+        ])
 
     def __rsub__(self, m: 'Matrix') -> 'Matrix':
-        return self.__sub__(m)
+        return m.__sub__(self)
+
+    def __truediv__(self, s: Union[int, float]) -> 'Matrix':
+        if s.__class__ not in (int, float):
+            raise ValueError("Scalar value must be int or float.")
+
+        return Matrix([
+            [x / s for x in a]
+            for a in self.data
+        ])
+
+    def __rtruediv__(self, s: float) -> 'Matrix':
+        return self.__truediv__(1 / s)
+
+    def __mul__(self, u: Union[float, 'Matrix']):
+        if u.__class__ in (float, int):
+            return Matrix([
+                [x / u for x in a]
+                for a in self.data
+            ])
+
+        if u.__class__ in (Matrix):
+            return Matrix([
+                [x * y for x, y in zip(a, b)]
+                for a, b in zip(self.data, u.data)
+            ])
+
+        raise ValueError(f"Cannot compute multiplication with {type(u)}")
+
+    def __rmul__(self, u: Union[float, 'Matrix']):
+        return self.__mul__(u)
+
+    def __str__(self):
+        return f"{type(self)}: {str(self.data)}"
+
+    def __repr__(self):
+        return f"{type(self)}: {str(self.data)}"
+
+    def T(self) -> 'Matrix':
+        rows, columns = self.shape
+
+        result = [[0] * columns for _ in range(rows)]
+        for n in range(columns):
+            for m in range(rows):
+                result[n][m] = self.data[m][n]
+
+        return Matrix(result)
+    
+
+class Vector(Matrix):
+    def __init__(self, values):
+        if not values.__class__ == list:
+            raise ValueError("Vector must be a list.")
+
+        if not (len(values) == 1 or all(len(row) == 1 for row in values)):
+            raise ValueError("Vector sublists must contain no more than 1 value.")
+
+        super().__init__(values)
