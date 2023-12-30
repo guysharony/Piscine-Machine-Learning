@@ -12,7 +12,10 @@ def simple_predict(x, theta):
     Raises:
         This function should not raise any Exception.
     """
-    if x.size == 0 or theta.size == 0 or x.ndim != 1 or theta.ndim != 1:
+    if x.size == 0 or theta.size == 0:
+        return None
+
+    if x.ndim != 1 or theta.ndim != 1:
         return None
 
     return np.array([float(theta[0] + theta[1] * x_i) for x_i in x])
