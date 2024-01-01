@@ -36,7 +36,7 @@ def predict_(x, theta):
     if x.size == 0 or theta.size == 0:
         return None
 
-    if x.ndim != 1 or theta.shape[0] != 2 or theta.shape[1] != 1:
+    if theta.shape[0] != 2 or theta.shape[1] != 1:
         return None
 
     return np.dot(add_intercept(x), theta)
