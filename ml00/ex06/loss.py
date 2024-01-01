@@ -61,6 +61,9 @@ def loss_elem_(y, y_hat):
     if y.size != y_hat.size:
         return None
 
+    if y.size == 0 or y_hat.size == 0:
+        return None
+
     return (y_hat - y) ** 2
 
 
@@ -82,6 +85,9 @@ def loss_(y, y_hat):
         return None
 
     if y.size != y_hat.size:
+        return None
+
+    if y.size == 0 or y_hat.size == 0:
         return None
 
     return np.sum(loss_elem_(y, y_hat)) * (1 / (2 * y.size))
