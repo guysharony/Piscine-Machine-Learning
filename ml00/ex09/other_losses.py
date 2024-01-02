@@ -84,43 +84,61 @@ def r2score_(y, y_hat):
     Raises:
         This function should not raise any Exceptions.
     """
+    if y.__class__ != np.ndarray or y_hat.__class__ != np.ndarray:
+        return None
+
+    if y.size != y_hat.size:
+        return None
+
+    if y.size == 0 or y_hat.size == 0:
+        return None
+
+    return 1 - (np.dot((y_hat - y).T, y_hat - y) / np.dot((y - np.mean(y)).T, y - np.mean(y)))
 
 
 if __name__ == "__main__":
     # Example 1:
     x = np.array([0, 15, -9, 7, 12, 3, -21])
     y = np.array([2, 14, -13, 5, 12, 4, -19])
+
     # Mean squared error
     ## your implementation
     print(f"<- {mse_(x,y)}")
     print("-> 4.285714285714286")
+    print()
 
     ## sklearn implementation
     print(f"<- {mean_squared_error(x,y)}")
     print("-> 4.285714285714286")
+    print()
 
     # Root mean squared error
     ## your implementation
     print(f"<- {rmse_(x,y)}")
     print("-> 2.0701966780270626")
+    print()
 
     ## sklearn implementation not available: take the square root of MSE
     print(f"<- {sqrt(mean_squared_error(x,y))}")
     print("-> 2.0701966780270626")
+    print()
 
     # Mean absolute error
     ## your implementation
     print(f"<- {mae_(x,y)}")
     print("-> 1.7142857142857142")
+    print()
 
     ## sklearn implementation
     print(f"<- {mean_absolute_error(x,y)}")
     print("-> 1.7142857142857142")
+    print()
 
     # R2-score
     ## your implementation
     print(f"<- {r2score_(x,y)}")
     print("-> 0.9681721733858745")
+    print()
 
     ## sklearn implementation
     print(f"<- {r2_score(x,y)}")
