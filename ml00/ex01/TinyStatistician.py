@@ -11,24 +11,17 @@ class TinyStatistician:
 
     @staticmethod
     def median(x) -> Union[float, None]:
-        if len(x) == 0:
-            return None
-
-        x.sort()
-        count = len(x)
-        if count % 2 == 0:
-            return (float(x[int(count // 2)]) + float(x[int(count // 2) - 1])) / 2
-
-        return float(x[count // 2])
+        return TinyStatistician.percentile(x, 50)
 
     @staticmethod
     def quartile(x) -> Union[float, None]:
         if len(x) == 0:
             return None
 
-        x.sort()
-        count = len(x)
-        return [float(x[count // 4]), float(x[count * 3 // 4])]
+        return [
+            TinyStatistician.percentile(x, 25),
+            TinyStatistician.percentile(x, 75)
+        ]
 
     @staticmethod
     def percentile(x, p) -> Union[float, None]:

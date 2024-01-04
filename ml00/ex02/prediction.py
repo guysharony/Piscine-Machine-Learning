@@ -18,7 +18,10 @@ def simple_predict(x, theta):
     if x.ndim != 1 or theta.ndim != 1:
         return None
 
-    return np.array([float(theta[0] + theta[1] * x_i) for x_i in x])
+    return np.array([
+        float(theta[0] + theta[1] * x_i)
+        for x_i in x
+    ])
 
 if __name__ == "__main__":
     x = np.arange(1, 6)
