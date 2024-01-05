@@ -18,14 +18,19 @@ def simple_predict(x, theta):
 
     if x.size == 0 or theta.size == 0:
         return None
-    
-    if theta.shape[0] + 1 != x.shape[1]:
+
+    if theta.shape[0] - 1 != x.shape[1] or theta.shape[1] != 1:
         return None
 
-    return np.array([
-        float(theta[0] + theta[1] * x_i)
-        for x_i in x
-    ])
+    m, n = x.shape
+    y_hat = np.zeros((m, 1))
+
+    for i in range(m):
+        y_hat[i] = theta[0]
+        for j in range(n):
+            y_hat[i] += x[i, j] * theta[j + 1]
+
+    return y_hat
 
 if __name__ == "__main__":
     x = np.arange(1,13).reshape((4,-1))
