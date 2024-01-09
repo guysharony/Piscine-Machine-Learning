@@ -60,7 +60,7 @@ class MyLinearRegression():
         if x.size == 0 or self.thetas.size == 0:
             return None
 
-        if self.thetas.shape[0] - 1 != x.shape[1] or self.thetas.shape[1] != 1:
+        if self.thetas.shape[0] != x.shape[1] + 1 or x.shape[0] != y.shape[0]:
             return None
 
         self.thetas = self.thetas.astype(float).copy()
