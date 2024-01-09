@@ -54,10 +54,13 @@ class MyLinearRegression():
         Raises:
             This function should not raise any Exception.
         """
-        if y.__class__ != np.ndarray or x.__class__ != np.ndarray or self.thetas.__class__ != np.ndarray:
+        if x.__class__ != np.ndarray or y.__class__ != np.ndarray or self.thetas.__class__ != np.ndarray:
             return None
 
-        if x.shape[0] != y.shape[0] or x.shape[1] + 1 != self.thetas.shape[0]:
+        if x.size == 0 or self.thetas.size == 0:
+            return None
+
+        if self.thetas.shape[0] - 1 != x.shape[1] or self.thetas.shape[1] != 1:
             return None
 
         self.thetas = self.thetas.astype(float).copy()
