@@ -1,7 +1,4 @@
-import pandas as pd
 import numpy as np
-from sklearn.metrics import mean_squared_error
-import matplotlib.pyplot as plt
 
 class MyLinearRegression():
     """
@@ -15,7 +12,7 @@ class MyLinearRegression():
         self.thetas = thetas
 
     @staticmethod
-    def simple_gradient(x, y, theta):
+    def gradient(x, y, theta):
         """Computes a gradient vector from three non-empty numpy.array, without any for loop.
             The three arrays must have compatible shapes.
         Args:
@@ -60,14 +57,13 @@ class MyLinearRegression():
         if y.__class__ != np.ndarray or x.__class__ != np.ndarray or self.thetas.__class__ != np.ndarray:
             return None
 
-        if y.size == 0 or x.size == 0 or self.thetas.size == 0:
+        if x.shape[0] != y.shape[0] or x.shape[1] + 1 != self.thetas.shape[0]:
             return None
 
         self.thetas = self.thetas.astype(float).copy()
         for _ in range(self.max_iter):
-            gradient = MyLinearRegression.simple_gradient(x, y, self.thetas)
+            gradient = MyLinearRegression.gradient(x, y, self.thetas)
             self.thetas -= self.alpha * gradient
-
         return self.thetas
 
     def loss_(self, y, y_hat):
@@ -129,49 +125,48 @@ class MyLinearRegression():
             return None
         return np.mean((y_hat - y) ** 2)
 
+
 if __name__ == "__main__":
-    data = pd.read_csv("are_blue_pills_magics.csv")
+    X = np.array([[1., 1., 2., 3.], [5., 8., 13., 21.], [34., 55., 89., 144.]])
+    Y = np.array([[23.], [48.], [218.]])
 
-    Xpill = np.array(data["Micrograms"]).reshape(-1,1)
-    Yscore = np.array(data["Score"]).reshape(-1,1)
+    mylr = MyLinearRegression(np.array([[1.], [1.], [1.], [1.], [1]]))
 
-    linear_model1 = MyLinearRegression(np.array([[89.0], [-8]]))
-    linear_model2 = MyLinearRegression(np.array([[89.0], [-6]]))
-
-    Y_model1 = linear_model1.predict_(Xpill)
-    Y_model2 = linear_model2.predict_(Xpill)
-
-    print("__ Model 1 __")
-    print(f"<- {MyLinearRegression.mse_(Yscore, Y_model1)}")
-    print("-> 57.603042857142825")
+    # Example 0:
+    y_hat = mylr.predict_(X)
+    print(f"<- {y_hat}")
+    print(f"-> {np.array([[8.], [48.], [323.]])}")
     print()
 
-    print(f"<- {mean_squared_error(Yscore, Y_model1)}")
-    print("-> 57.603042857142825")
+    # Example 1:
+    print(f"<- {mylr.loss_elem_(Y, y_hat)}")
+    print(f"-> {np.array([[225.], [0.], [11025.]])}")
     print()
 
-    print("__ Model 2 __")
-    print(f"<- {MyLinearRegression.mse_(Yscore, Y_model2)}")
-    print("-> 232.16344285714285")
+    # Example 2:
+    print(f"<- {mylr.loss_(Y, y_hat)}")
+    print(f"-> {1875.0}")
     print()
 
-    print(f"<- {mean_squared_error(Yscore, Y_model2)}")
-    print("-> 232.16344285714285")
+    # Example 3:
+    mylr.alpha = 1.6e-4
+    mylr.max_iter = 200000
+    mylr.fit_(X, Y)
+    print(f"<- {mylr.thetas}")
+    print(f"-> {np.array([[1.81883792e+01], [2.76697788e+00], [-3.74782024e-01], [1.39219585e+00], [1.74138279e-02]])}")
+    print()
 
-    plt.grid(True)
-    plt.scatter(Xpill, Yscore, label="Strue(pills)", color="cyan")
-    plt.plot(
-        Xpill,
-        Y_model1,
-        label="Spredict(pills)_2",
-        color="lawngreen",
-        linestyle="--",
-        marker="x",
-    )
-    plt.xlabel("Quantity of blue pill (in micrograms)")
-    plt.ylabel("Space driving score")
-    plt.legend()
-    plt.title("Space driving score as a function of the quantity of blue pill (in micrograms).")
-    plt.show()
+    # Example 4:
+    y_hat = mylr.predict_(X)
+    print(f"<- {y_hat}")
+    print(f"-> {np.array([[23.41720822], [47.48924883], [218.06563769]])}")
+    print()
 
-    ## Need to add plot => J(θ) in function of the θ values
+    # Example 5:
+    print(f"<- {mylr.loss_elem_(Y, y_hat)}")
+    print(f"-> {np.array([[0.1740627], [0.26086676], [0.00430831]])}")
+    print()
+
+    # Example 6:
+    print(f"<- {mylr.loss_(Y, y_hat)}")
+    print(f"-> {0.07320629376956715}")
