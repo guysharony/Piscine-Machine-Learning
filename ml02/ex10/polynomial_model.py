@@ -24,32 +24,3 @@ def add_polynomial_features(x, power):
             features[:, i * power + j - 1] = x[:, i] ** j
 
     return features.astype(int)
-
-
-if __name__ == "__main__":
-    x = np.arange(1,6).reshape(-1, 1)
-
-    # Example 0:
-    print(f"<- {add_polynomial_features(x, 3)}")
-
-    expected = np.array([
-        [  1,   1,   1],
-        [  2,   4,   8],
-        [  3,   9,  27],
-        [  4,  16,  64],
-        [  5,  25, 125]
-    ])
-    print(f"-> {expected}")
-    print()
-
-    # Example 1:
-    print(f"<- {add_polynomial_features(x, 6)}")
-
-    expected = np.array([
-        [    1,     1,     1,     1,     1,     1],
-        [    2,     4,     8,    16,    32,    64],
-        [    3,     9,    27,    81,   243,   729],
-        [    4,    16,    64,   256,  1024,  4096],
-        [    5,    25,   125,   625,  3125, 15625]
-    ])
-    print(f"-> {expected}")

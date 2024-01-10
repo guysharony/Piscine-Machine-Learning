@@ -16,13 +16,15 @@ def add_polynomial_features(x, power):
     if x.__class__ != np.ndarray or power.__class__ != int:
         return None
 
-    m = x.shape[0]
-    features = np.zeros((m, power))
+    m, n = x.shape
+    features = np.zeros((m, n * power))
 
-    for i in range(1, power + 1):
-        features[:, i - 1] = x.ravel() ** i
+    for i in range(n):
+        for j in range(1, power + 1):
+            features[:, i * power + j - 1] = x[:, i] ** j
 
     return features.astype(int)
+
 
 if __name__ == "__main__":
     x = np.arange(1,6).reshape(-1, 1)
