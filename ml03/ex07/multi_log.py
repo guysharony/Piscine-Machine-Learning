@@ -35,6 +35,7 @@ if __name__ == "__main__":
         models.append(model)
 
     y_predictions_probabilities = [model.predict_(x_test) for model in models]
-    y_predictions_maxarg = np.argmax(y_predictions_probabilities)
 
-    print(y_predictions_maxarg)
+    print(y_predictions_probabilities)
+    print()
+    print(np.hstack(y_predictions_probabilities))
