@@ -34,8 +34,10 @@ if __name__ == "__main__":
 
         models.append(model)
 
-    y_predictions_probabilities = [model.predict_(x_test) for model in models]
+    y_citizens_probabilities = np.hstack([model.predict_(x_test) for model in models])
+    y_citizens_predictions = np.argmax(y_citizens_probabilities, axis=1).reshape(-1, 1)
 
-    print(y_predictions_probabilities)
-    print()
-    print(np.hstack(y_predictions_probabilities))
+    y_citizens_accuracy = np.mean(y_citizens_predictions == y_test)
+
+    print(f"Predictions: {y_citizens_predictions.flatten()}")
+    print(f"Accuracy: {y_citizens_accuracy * 100}%")
