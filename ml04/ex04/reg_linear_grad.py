@@ -21,7 +21,7 @@ def reg_linear_grad(y, x, theta, lambda_):
 
     if x.size == 0 or y.size == 0 or theta.size == 0:
         return None
-    
+
     if y.shape[0] != x.shape[0]:
         return None
 
@@ -29,7 +29,17 @@ def reg_linear_grad(y, x, theta, lambda_):
         return None
 
     m, n = x.shape
-    
+    x_prime = np.hstack((np.ones((x.shape[0], 1)), x))
+    gradient = np.zeros((n + 1, 1))
+
+    for j in range(n + 1):
+        for i in range(m):
+            gradient[j] += (np.dot(x_prime[i], theta) - y[i]) * x_prime[i, j]
+        if j != 0:
+            gradient[j] += lambda_ * theta[j]
+
+    return gradient / m
+
 
 def vec_reg_linear_grad(y, x, theta, lambda_):
     """Computes the regularized linear gradient of three non-empty numpy.ndarray,
@@ -58,9 +68,17 @@ def vec_reg_linear_grad(y, x, theta, lambda_):
 
     if x.shape[1] + 1 != theta.shape[0]:
         return None
-    
 
+    m = x.shape[0]
+    x_prime = np.hstack((np.ones((m, 1)), x))
+    theta_prime = theta.copy()
+    theta_prime[0] = 0
 
+    gradient = (1 / m) * (
+        np.dot(x_prime.T, (np.dot(x_prime, theta) - y)) + (lambda_ * theta_prime)
+    )
+
+    return gradient
 
 
 if __name__ == "__main__":
